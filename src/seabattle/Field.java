@@ -46,6 +46,9 @@ public class Field {
         }
     }
 
+    /**
+     * Установить все корабли на поле рандомно
+     */
     void setShipsRandom() {
         Ship ship4 = new Ship(4);
         Random random = new Random();
@@ -54,6 +57,11 @@ public class Field {
         trySet(ship4);
     }
 
+    /**
+     * Попробовать установить один корабль
+     * @param ship Корабль
+     * @return true, если удалось, иначе false
+     */
     private boolean trySet(Ship ship) {
         for (int i = 0; i < ship.size; i++) {
             Deck deck = ship.decks[i];
@@ -63,6 +71,11 @@ public class Field {
         return true;
     }
 
+    /**
+     * Проверить точку на поле на возможность поставить туда палубу корабля
+     * @param deck Палуба
+     * @return true, если палубу возможно поставить, иначе false
+     */
     private boolean chekPoint(Deck deck) {
         if (points[deck.y][deck.x].symbol != '.') {
             return false;
