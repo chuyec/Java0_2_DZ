@@ -1,7 +1,5 @@
 package seabattle;
 
-import java.awt.Color;
-
 /**
  * Created by Chuyec on 05.10.2015.
  */
@@ -13,7 +11,7 @@ public class Main {
     private static void playGame() {
         Field field = new Field(10);
         field.print();
-        field.setShipsRandom();
+        field.fill();
         field.print();
 
         System.out.println("\033[32m Warning! " + (char)27 + "[36m");

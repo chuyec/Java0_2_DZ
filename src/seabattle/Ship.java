@@ -1,16 +1,26 @@
 package seabattle;
 
+import java.util.Random;
+
 /**
  * Created by Chuyec on 06.10.2015.
  */
 public class Ship {
     enum Orientation {
         VERTICAL,
-        HORIZONTAL,
+        HORIZONTAL;
+
+        private static final Orientation[] VALUES = values();
+
+        public static Orientation getRandom() {
+            Random random = new Random();
+            return VALUES[random.nextInt(VALUES.length)];
+        }
     }
 
     public int size;
     public Deck[] decks;
+    Orientation orientation;
 
     public Ship(int size) {
         this.size = size;
@@ -21,9 +31,20 @@ public class Ship {
         }
     }
 
-    void createRandom(Orientation orientation) {
-        int x = 0;
-        int y = 0;
+    void createRandom(int border) {
+        orientation = Orientation.getRandom();
+
+        Random random = new Random();
+        int x;
+        int y;
+        if (orientation == Orientation.VERTICAL) {
+            x = random.nextInt(border);
+            y = random.nextInt(border - size);
+        }
+        else {
+            x = random.nextInt(border - size);
+            y = random.nextInt(border);
+        }
 
         for (int i = 0; i < decks.length; i++) {
             decks[i].x = x;
