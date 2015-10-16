@@ -66,9 +66,37 @@ public class Field {
                 ship = shipArrayList.get(i);
                 ship.createRandom(size);
             } while(!trySetShip(ship));
-            print();
-            System.out.println();
         }
+    }
+
+    public Ship.State shot(int x, int y) {
+        Ship.State state = Ship.State.KILLED;
+
+        for (Ship ship : shipArrayList) {
+            state = ship.shot(x, y);
+
+            switch (state) {
+                case WHOLE:
+                    points[y][x].color = Point.Color.VIOLET;
+                    points[y][x].symbol = '#';
+                    break;
+                case KILLED:
+                    shipArrayList.remove(ship);
+                case WOUNDED:
+                    points[y][x].color = Point.Color.RED;
+                    points[y][x].symbol = Deck.DESTROYED_DECK;
+                    break;
+            }
+
+            if (state != Ship.State.WHOLE) {
+                break;
+            }
+        }
+        return state;
+    }
+
+    public boolean isEmpty() {
+        return shipArrayList.isEmpty();
     }
 
     /**
@@ -80,16 +108,14 @@ public class Field {
         for (int i = 0; i < ship.size; i++) {
             Deck deck = ship.decks[i];
             if (!checkPoint(deck)) {
-//                System.out.printf("FALSE: X = %d, Y = %d, %s\n", deck.x, deck.y, ship.orientation.name());
                 return false;
             }
-//            System.out.printf("TRUE: X = %d, Y = %d, %s\n", deck.x, deck.y, ship.orientation.name());
         }
 
         for (int i = 0; i < ship.size; i++) {
             Deck deck = ship.decks[i];
-            points[deck.y][deck.x].symbol = Deck.WHOLE_DECK;
-            points[deck.y][deck.x].color = Point.Color.GREEN;
+            points[deck.y][deck.x].symbol = deck.symbol;
+            points[deck.y][deck.x].color = deck.color;
         }
         return true;
     }
@@ -101,28 +127,22 @@ public class Field {
      */
     private boolean checkPoint(Deck deck) {
         if (points[deck.y][deck.x].symbol != '.') {
-            System.out.printf("FALSE: Y = %d, X = %d, point = %c\n", deck.y, deck.x, points[deck.y][deck.x].symbol);
             return false;
         }
 
         for (int i = deck.y - 1; i <= deck.y + 1; i++) {
             for (int j = deck.x - 1; j <= deck.x + 1; j++) {
                 if (i < 0 || j < 0) {
-                    System.out.println("Continue");
                     continue;
                 }
                 if (i > size - 1 || j > size - 1) {
-                    System.out.println("Continue");
                     continue;
                 }
-                System.out.printf("Check. Y = %d, X = %d, point = %c\n", i, j, points[i][j].symbol);
                 if (points[i][j].symbol != '.') {
-                    System.out.printf("FALSE: Y = %d, X = %d, point[%d][%d] = %c\n", deck.y, deck.x, i, j, points[i][j].symbol);
                     return false;
                 }
             }
         }
-        System.out.printf("TRUE: Y = %d, X = %d\n", deck.y, deck.x);
         return true;
     }
 }

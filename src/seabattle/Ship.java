@@ -18,9 +18,16 @@ public class Ship {
         }
     }
 
+    enum State {
+        WHOLE,
+        WOUNDED,
+        KILLED,
+    }
+
     public int size;
     public Deck[] decks;
     Orientation orientation;
+    State state;
 
     public Ship(int size) {
         this.size = size;
@@ -29,9 +36,10 @@ public class Ship {
         for (int i = 0; i < decks.length; i++) {
             decks[i] = new Deck(0, 0, false);
         }
+        state = State.WHOLE;
     }
 
-    void createRandom(int border) {
+    public void createRandom(int border) {
         orientation = Orientation.getRandom();
 
         Random random = new Random();
@@ -52,5 +60,34 @@ public class Ship {
             if (orientation == Orientation.VERTICAL) y++;
             if (orientation == Orientation.HORIZONTAL) x++;
         }
+    }
+
+    public State shot(int x, int y) {
+        State state = State.WHOLE;
+
+        for (int i = 0; i < decks.length; i++) {
+            Deck deck = decks[i];
+            if (deck.x == x && deck.y == y) {
+                deck.destroy();
+                state = State.WOUNDED;
+                break;
+            }
+        }
+
+        if (isAllDecksDestroyed()) {
+            state = State.KILLED;
+        }
+
+        return state;
+    }
+
+    private boolean isAllDecksDestroyed() {
+        for (int i = 0; i < decks.length; i++) {
+            Deck deck = decks[i];
+            if (!deck.isDestroyed()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
